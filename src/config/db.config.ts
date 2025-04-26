@@ -6,6 +6,6 @@ interface IDbConfig {
 
 export const DbConfig = (): IDbConfig => ({
   mongo: {
-    uri: process.env.MONGO_URI || 'mongodb://localhost:27017/chat',
+    uri: process.env.MONGO_URI || "mongodb://localhost:27017/chat",
   },
 });

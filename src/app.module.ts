@@ -1,8 +1,10 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AppConfig } from './config/app.config';
-import { DbConfig } from './config/db.config';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { MongooseModule } from "@nestjs/mongoose";
+import { AppConfig } from "./config/app.config";
+import { DbConfig } from "./config/db.config";
+import { CoreModule } from "./core/core.module";
+import { EmailModule } from './shared/services/email/email.module';
 
 @Module({
   imports: [
@@ -11,9 +13,11 @@ import { DbConfig } from './config/db.config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('mongo.uri'),
+        uri: configService.get<string>("mongo.uri"),
       }),
     }),
+    CoreModule,
+    EmailModule,
   ],
   controllers: [],
   providers: [],
