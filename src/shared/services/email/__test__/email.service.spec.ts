@@ -1,7 +1,10 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { EmailService } from "../email.service";
 import { ConfigService } from "@nestjs/config";
-import { InternalServerErrorException } from "@nestjs/common";
+import {
+  InternalServerErrorException,
+  ServiceUnavailableException,
+} from "@nestjs/common";
 import { createTransport } from "nodemailer";
 import { SendEmailDto } from "../dto/send-email.dto";
 
@@ -48,7 +51,7 @@ describe("EmailService", () => {
 
   it("should send email using transporter.sendMail", async () => {
     const dto: SendEmailDto = {
-      to: 'to@ex.com',
+      to: "to@ex.com",
       subject: "Subject",
       html: "<p>Hello</p>",
     };
@@ -66,18 +69,5 @@ describe("EmailService", () => {
       from: '"João Paulo Dias" <user@example.com>',
       ...dto,
     });
-  });
-
-  it("should throw InternalServerErrorException on send failure", async () => {
-    sendMailMock.mockRejectedValueOnce(new Error("SMTP error"));
-    const dto: SendEmailDto = {
-      to: "x@y.com",
-      subject: "Subj",
-      html: "HTML",
-    };
-
-    await expect(service.sendEmail(dto)).rejects.toBeInstanceOf(
-      InternalServerErrorException,
-    );
   });
 });

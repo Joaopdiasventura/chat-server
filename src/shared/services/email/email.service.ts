@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  ServiceUnavailableException,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Transporter, createTransport } from "nodemailer";
 import { SendEmailDto } from "./dto/send-email.dto";
@@ -23,9 +28,9 @@ export class EmailService {
         from: `"João Paulo Dias" <${this.configService.get<string>("email.account")}>`,
         ...sendEmailDto,
       });
-    } catch (error) {
-      console.error("Erro ao enviar o email:", error);
-      throw new InternalServerErrorException(
+    } catch {
+      Logger.error("Erro ao enviar um email");
+      throw new ServiceUnavailableException(
         "Erro ao enviar o email, tente novamente mais tarde ou contate o suporte",
       );
     }
