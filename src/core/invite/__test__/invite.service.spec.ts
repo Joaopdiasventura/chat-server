@@ -67,12 +67,14 @@ describe("InviteService", () => {
           useValue: {
             findById: jest.fn(),
             update: jest.fn(),
+            findUser: jest.fn(),
           },
         },
         {
           provide: InviteGateway,
           useValue: {
             createInvite: jest.fn(),
+            enterChat: jest.fn(),
           },
         },
         {

@@ -6,6 +6,7 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { User } from "../user/entities/user.entity";
+import { Chat } from "../chat/entities/chat.entity";
 
 @WebSocketGateway({
   cors: {
@@ -43,5 +44,14 @@ export class InviteGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (socketIds)
       for (const socketId of socketIds)
         this.server.to(socketId).emit("invite-created", { adm, chat });
+  }
+
+  public enterChat(user: User, chat: Chat): void {
+    for (const participant of chat.users) {
+      const socketIds = this.userConnections.get((participant as User).email);
+      if (socketIds)
+        for (const socketId of socketIds)
+          this.server.to(socketId).emit("enter-chat", { user });
+    }
   }
 }

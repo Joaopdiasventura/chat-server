@@ -60,7 +60,9 @@ export class InviteService {
     const invite = await this.findById(id);
     if (!invite) throw new NotFoundException("Convite não encontrado!");
     const chat = await this.chatService.findById(invite.chat);
+    const user = await this.chatService.findUser(invite.user);
     (chat.users as string[]).push(invite.user);
+    this.inviteGateway.enterChat(user, chat);
     await this.chatService.update(chat._id, chat as UpdateChatDto);
     await this.inviteRepository.delete(id);
     return { message: "Convite aceito com sucesso!" };
