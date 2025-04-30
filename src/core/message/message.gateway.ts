@@ -14,7 +14,9 @@ import { User } from "../user/entities/user.entity";
     origin: process.env.CLIENT_URL || "http://localhost:4200",
   },
 })
-export class MessageGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class MessageGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   private server: Server;
 

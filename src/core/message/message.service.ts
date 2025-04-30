@@ -19,13 +19,15 @@ export class MessageService {
   ) {}
 
   public async create(createMessageDto: CreateMessageDto): Promise<Message> {
-    await this.findUser(createMessageDto.user);
+    const user = await this.findUser(createMessageDto.user);
     const chat = await this.findChat(createMessageDto.chat);
 
-    if (!(chat.users as string[]).includes(createMessageDto.user)) 
+    if (!this.userInChat(chat.users as User[], createMessageDto.user))
       throw new BadRequestException("Você não faz parte dessa conversa");
 
     const message = await this.messageRepository.create(createMessageDto);
+    message.user = user;
+    message.chat = chat;
     this.messageGateway.sendMessage(chat, message);
     return message;
   }
@@ -44,5 +46,11 @@ export class MessageService {
 
   private async findChat(chat: string): Promise<Chat> {
     return await this.chatService.findById(chat);
+  }
+
+  private userInChat(users: User[], user: string): boolean {
+    for (let i = 0; i < users.length; i++)
+      if (users[i]._id == user) return true;
+    return false;
   }
 }

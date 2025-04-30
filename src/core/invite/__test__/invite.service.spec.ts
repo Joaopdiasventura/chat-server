@@ -11,6 +11,7 @@ import { UpdateChatDto } from "../../chat/dto/update-chat.dto";
 import { Invite } from "../entities/invite.entity";
 import { User } from "../../user/entities/user.entity";
 import { Chat } from "../../chat/entities/chat.entity";
+import { UserService } from "../../user/user.service";
 
 describe("InviteService", () => {
   let service: InviteService;
@@ -67,7 +68,12 @@ describe("InviteService", () => {
           useValue: {
             findById: jest.fn(),
             update: jest.fn(),
-            findUser: jest.fn(),
+          },
+        },
+        {
+          provide: UserService,
+          useValue: {
+            findById: jest.fn(),
           },
         },
         {

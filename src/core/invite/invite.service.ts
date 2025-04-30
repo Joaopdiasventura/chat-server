@@ -13,6 +13,8 @@ import { InviteGateway } from "./invite.gateway";
 import { ResponseMessage } from "../../shared/interfaces/response-message";
 import { UpdateChatDto } from "../chat/dto/update-chat.dto";
 import { Invite } from "./entities/invite.entity";
+import { UserService } from "../user/user.service";
+import { Chat } from "../chat/entities/chat.entity";
 
 @Injectable()
 export class InviteService {
@@ -21,6 +23,7 @@ export class InviteService {
     private readonly inviteRepository: IInviteRepository,
     @Inject(forwardRef(() => ChatService))
     private readonly chatService: ChatService,
+    private readonly userService: UserService,
     private readonly inviteGateway: InviteGateway,
     private readonly emailService: EmailService,
     private readonly configService: ConfigService,
@@ -32,17 +35,17 @@ export class InviteService {
       : `Você recebeu um convite para conversar com ${createInviteDto.adm.name} - ${createInviteDto.adm.email}`;
     for (const user of createInviteDto.users) {
       if (!user.isVerified) continue;
-      await this.inviteRepository.create(createInviteDto.chat, user.id);
+      const invite = await this.inviteRepository.create(
+        createInviteDto.chat,
+        user.id,
+      );
+      invite.chat = await this.chatService.findById(invite.chat as string);
       await this.emailService.sendEmail({
         subject,
         to: user.email,
         html: `<p>Para aceitar o convite, clique <a href="${this.configService.get<string>("client.url")}">aqui</a></p>`,
       });
-      this.inviteGateway.createInvite(
-        user.email,
-        createInviteDto.adm,
-        createInviteDto.chat,
-      );
+      this.inviteGateway.createInvite(user.email, invite);
     }
   }
 
@@ -56,16 +59,16 @@ export class InviteService {
     return this.inviteRepository.findManyByUser(user);
   }
 
-  public async acceptInvite(id: string): Promise<ResponseMessage> {
+  public async acceptInvite(id: string): Promise<Chat> {
     const invite = await this.findById(id);
     if (!invite) throw new NotFoundException("Convite não encontrado!");
-    const chat = await this.chatService.findById(invite.chat);
-    const user = await this.chatService.findUser(invite.user);
-    (chat.users as string[]).push(invite.user);
+    const chat = await this.chatService.findById(invite.chat as string);
+    const user = await this.userService.findById(invite.user as string);
+    (chat.users as string[]).push(invite.user as string);
     this.inviteGateway.enterChat(user, chat);
     await this.chatService.update(chat._id, chat as UpdateChatDto);
     await this.inviteRepository.delete(id);
-    return { message: "Convite aceito com sucesso!" };
+    return chat;
   }
 
   public async delete(id: string): Promise<ResponseMessage> {

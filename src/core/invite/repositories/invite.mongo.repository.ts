@@ -21,11 +21,8 @@ export class MongoInviteRepository implements IInviteRepository {
       .find({ user })
       .populate({
         path: "chat",
-        populate: {
-          path: "users",
-          select: "name email color",
-        },
       })
+      .populate({ path: "user" })
       .exec();
   }
 

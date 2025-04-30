@@ -7,6 +7,7 @@ import {
 import { Server, Socket } from "socket.io";
 import { User } from "../user/entities/user.entity";
 import { Chat } from "../chat/entities/chat.entity";
+import { Invite } from "./entities/invite.entity";
 
 @WebSocketGateway({
   cors: {
@@ -39,11 +40,11 @@ export class InviteGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  public createInvite(email: string, adm: User, chat: string): void {
+  public createInvite(email: string, invite: Invite): void {
     const socketIds = this.userConnections.get(email);
     if (socketIds)
       for (const socketId of socketIds)
-        this.server.to(socketId).emit("invite-created", { adm, chat });
+        this.server.to(socketId).emit("invite-created", invite);
   }
 
   public enterChat(user: User, chat: Chat): void {

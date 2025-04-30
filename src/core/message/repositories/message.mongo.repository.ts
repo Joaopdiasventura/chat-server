@@ -58,7 +58,7 @@ export class MongoMessageRepository implements IMessageRepository {
             localField: "user",
             foreignField: "_id",
             as: "user",
-            pipeline: [{ $project: { name: 1, email: 1 } }],
+            pipeline: [{ $project: { name: 1, email: 1, color: 1 } }],
           },
         },
         { $unwind: "$user" },

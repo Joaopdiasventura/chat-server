@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import { User } from "../../user/entities/user.entity";
 
-@Schema({ versionKey: false })
+@Schema({ versionKey: false, timestamps: true })
 export class Chat extends Document<string, Chat, Chat> {
   @Prop({ required: false })
   public name?: string;

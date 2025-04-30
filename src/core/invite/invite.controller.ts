@@ -1,8 +1,16 @@
-import { Controller, Get, Post, Param, Delete, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  UseGuards,
+} from "@nestjs/common";
 import { InviteService } from "./invite.service";
 import { Invite } from "./entities/invite.entity";
 import { ResponseMessage } from "../../shared/interfaces/response-message";
 import { AuthGuard } from "../../shared/services/auth/guards/auth.guard";
+import { Chat } from "../chat/entities/chat.entity";
 
 @Controller("invite")
 export class InviteController {
@@ -10,7 +18,7 @@ export class InviteController {
 
   @Post(":id")
   @UseGuards(AuthGuard)
-  public acceptInvite(@Param("id") id: string): Promise<ResponseMessage> {
+  public acceptInvite(@Param("id") id: string): Promise<Chat> {
     return this.inviteService.acceptInvite(id);
   }
 

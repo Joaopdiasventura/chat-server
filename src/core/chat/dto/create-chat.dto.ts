@@ -23,7 +23,7 @@ export class CreateChatDto {
     {},
     {
       each: true,
-      message: "Cada participante deve ser um ObjectId (string) válido",
+      message: "Cada participante deve ser um email válido",
     },
   )
   public users: string[];

@@ -15,7 +15,13 @@ export class MongoChatRepository implements IChatRepository {
   }
 
   public async findById(id: string): Promise<Chat> {
-    return await this.chatModel.findById(id).exec();
+    return await this.chatModel
+      .findById(id)
+      .populate({
+        path: "users",
+        select: "email",
+      })
+      .exec();
   }
 
   public async findManyByUser(user: string): Promise<Chat[]> {
