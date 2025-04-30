@@ -4,7 +4,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { AppConfig } from "./config/app.config";
 import { DbConfig } from "./config/db.config";
 import { CoreModule } from "./core/core.module";
-import { EmailModule } from './shared/services/email/email.module';
+import { EmailModule } from "./shared/services/email/email.module";
 
 @Module({
   imports: [

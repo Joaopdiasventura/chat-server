@@ -3,6 +3,7 @@ import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { ExpressAdapter } from "@nestjs/platform-express";
 import { ConfigService } from "@nestjs/config";
 import { AppModule } from "./app.module";
+import { BlockIpInterceptor } from "./shared/interceptors/block-ip.interceptor";
 
 async function bootstrap(): Promise<void> {
   const app =
@@ -16,6 +17,9 @@ async function bootstrap(): Promise<void> {
   };
 
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+
+  app.useGlobalInterceptors(new BlockIpInterceptor());
+
   app.enableCors(corsOptions);
 
   await app.listen(configService.get<number>("port"));
