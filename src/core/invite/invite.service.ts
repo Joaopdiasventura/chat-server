@@ -35,17 +35,16 @@ export class InviteService {
       : `Você recebeu um convite para conversar com ${createInviteDto.adm.name} - ${createInviteDto.adm.email}`;
     for (const user of createInviteDto.users) {
       if (!user.isVerified) continue;
-      const invite = await this.inviteRepository.create(
+      const { id } = await this.inviteRepository.create(
         createInviteDto.chat,
         user.id,
       );
-      invite.chat = await this.chatService.findById(invite.chat as string);
       await this.emailService.sendEmail({
         subject,
         to: user.email,
         html: `<p>Para aceitar o convite, clique <a href="${this.configService.get<string>("client.url")}">aqui</a></p>`,
       });
-      this.inviteGateway.createInvite(user.email, invite);
+      this.inviteGateway.createInvite(user.email, await this.findById(id));
     }
   }
 

@@ -13,7 +13,13 @@ export class MongoInviteRepository implements IInviteRepository {
   }
 
   public async findById(id: string): Promise<Invite> {
-    return await this.inviteModel.findById(id).exec();
+    return await this.inviteModel
+      .findById(id)
+      .populate({
+        path: "chat",
+      })
+      .populate({ path: "user" })
+      .exec();
   }
 
   public async findManyByUser(user: string): Promise<Invite[]> {
@@ -23,6 +29,7 @@ export class MongoInviteRepository implements IInviteRepository {
         path: "chat",
       })
       .populate({ path: "user" })
+      .sort({ createdAt: -1 })
       .exec();
   }
 
