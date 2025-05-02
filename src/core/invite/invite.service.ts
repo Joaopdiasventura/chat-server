@@ -42,7 +42,7 @@ export class InviteService {
       await this.emailService.sendEmail({
         subject,
         to: user.email,
-        html: `<p>Para aceitar o convite, clique <a href="${this.configService.get<string>("client.url")}">aqui</a></p>`,
+        html: `<p>Para aceitar o convite, clique <a href="${this.configService.get<string>("client.url")}/?findInvites=true">aqui</a></p>`,
       });
       this.inviteGateway.createInvite(user.email, await this.findById(id));
     }
