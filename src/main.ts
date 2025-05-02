@@ -18,7 +18,8 @@ async function bootstrap(): Promise<void> {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
-  app.useGlobalInterceptors(new BlockIpInterceptor());
+  if (configService.get<string>("env") != "development")
+    app.useGlobalInterceptors(new BlockIpInterceptor());
 
   app.enableCors(corsOptions);
 
