@@ -1,4 +1,5 @@
 interface IAppConfig {
+  env: string;
   salts: number;
   port: number;
   app: { url: string };
@@ -8,6 +9,7 @@ interface IAppConfig {
 }
 
 export const AppConfig = (): IAppConfig => ({
+  env: process.env.NODE_ENV || "development",
   salts: process.env.SALTS ? parseInt(process.env.SALTS) : 5,
   port: process.env.PORT ? parseInt(process.env.PORT) : 3000,
   app: { url: process.env.APP_URL || "http://localhost:3000" },
